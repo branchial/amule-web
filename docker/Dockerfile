@@ -1,21 +1,45 @@
-FROM ezjos/amule-base:latest
+FROM alpine:3.12
 LABEL MAINTAINER "branchial@protonmail.com"
 
 ENV AMULE_VERSION 2.3.2
+ENV UPNP_VERSION 1.14.0
+ENV CRYPTOPP_VERSION CRYPTOPP_8_4_0
 
-RUN apk --update add gd geoip libpng libwebp pwgen wxgtk zlib && \
+RUN apk --update add gd geoip libpng libwebp pwgen sudo wxgtk3 zlib bash && \
     apk --update add --virtual build-dependencies alpine-sdk automake \
                                autoconf bison g++ gcc gd-dev geoip-dev \
                                gettext gettext-dev git libpng-dev libwebp-dev \
                                libtool libsm-dev make musl-dev wget \
-                               wxgtk-dev zlib-dev
+                               wxgtk3-dev zlib-dev
+
+# Build libupnp
+RUN mkdir -p /opt \
+    && cd /opt \
+    && wget "http://downloads.sourceforge.net/sourceforge/pupnp/libupnp-${UPNP_VERSION}.tar.bz2" \
+    && tar xvfj libupnp*.tar.bz2 \
+    && cd libupnp* \
+    && ./configure --prefix=/usr \
+    && make \
+    && make install
+
+# Build crypto++
+RUN mkdir -p /opt && cd /opt \
+    && git clone --branch ${CRYPTOPP_VERSION} --single-branch "https://github.com/weidai11/cryptopp" /opt/cryptopp \
+    && cd /opt/cryptopp \
+    && sed -i -e 's/^CXXFLAGS/#CXXFLAGS/' GNUmakefile \
+    && export CXXFLAGS="${CXXFLAGS} -DNDEBUG -fPIC" \
+    && make -f GNUmakefile \
+    && make libcryptopp.so \
+    && install -Dm644 libcryptopp.so* /usr/lib/ \
+    && mkdir -p /usr/include/cryptopp \
+    && install -m644 *.h /usr/include/cryptopp/
 
 # Build amule from source
-ADD master-20210106 /opt/amule/
-WORKDIR /opt/amule
-RUN ls -l
-RUN ./autogen.sh
-RUN ./configure \
+RUN mkdir -p /opt/amule \
+    && git clone --branch ${AMULE_VERSION} --single-branch "https://github.com/amule-project/amule" /opt/amule \
+    && cd /opt/amule \
+    && ./autogen.sh \
+    && ./configure \
         --disable-gui \
         --disable-amule-gui \
         --disable-wxcas \
@@ -39,13 +63,15 @@ RUN ./configure \
         --enable-upnp \
         --disable-debug \
     && make \
-    && make install \
-    && make clean 
+    && make install
 
 # Install a nicer web ui
-WORKDIR /usr/share/amule/webserver 
-RUN git clone https://github.com/MatteoRagni/AmuleWebUI-Reloaded \
+RUN cd /usr/share/amule/webserver \
+    && git clone https://github.com/MatteoRagni/AmuleWebUI-Reloaded \
     && rm -rf AmuleWebUI-Reloaded/.git AmuleWebUI-Reloaded/doc-images
+
+# Add startup script
+ADD amule.sh /home/amule/amule.sh
 
 # Final cleanup
 RUN chmod a+x /home/amule/amule.sh \

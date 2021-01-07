@@ -2,16 +2,16 @@ FROM alpine:3.12
 LABEL MAINTAINER "branchial@protonmail.com"
 
 ENV AMULE_VERSION 2.3.2
+ENV AMULE_BRANCH fork
 ENV UPNP_VERSION 1.14.0
 ENV CRYPTOPP_VERSION CRYPTOPP_8_4_0
-ENV AMULE_BRANCH fork
 
-RUN apk --update add gd geoip libpng libwebp pwgen sudo wxgtk3 zlib bash && \
+RUN apk --update add gd geoip libpng libwebp pwgen sudo wxgtk zlib bash && \
     apk --update add --virtual build-dependencies alpine-sdk automake \
                                autoconf bison g++ gcc gd-dev geoip-dev \
                                gettext gettext-dev git libpng-dev libwebp-dev \
                                libtool libsm-dev make musl-dev wget \
-                               wxgtk3-dev zlib-dev
+                               wxgtk-dev zlib-dev
 
 # Build libupnp
 RUN mkdir -p /opt \

@@ -36,7 +36,7 @@ RUN mkdir -p /opt && cd /opt \
 
 # Build amule from source
 RUN mkdir -p /opt/amule \
-    && git clone --branch ${AMULE_VERSION} --single-branch "https://github.com/amule-project/amule" /opt/amule \
+    && git clone "https://github.com/amule-project/amule" /opt/amule \
     && cd /opt/amule \
     && ./autogen.sh \
     && ./configure \

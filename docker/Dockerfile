@@ -2,7 +2,7 @@ FROM alpine:3.12
 LABEL MAINTAINER "branchial@protonmail.com"
 
 ENV AMULE_VERSION 2.3.2
-ENV AMULE_BRANCH fork
+ENV AMULE_BRANCH master
 ENV UPNP_VERSION 1.14.0
 ENV CRYPTOPP_VERSION CRYPTOPP_8_4_0
 
@@ -76,7 +76,8 @@ ADD amule.sh /home/amule/amule.sh
 
 # Final cleanup
 RUN chmod a+x /home/amule/amule.sh \
-    && rm -rf /var/cache/apk/* && rm -rf /opt \
+    && rm -rf /var/cache/apk/* \
+    && rm -rf /opt \
     && apk del build-dependencies
 
 EXPOSE 4711/tcp 4712/tcp 4672/udp 4665/udp 4662/tcp 4661/tcp

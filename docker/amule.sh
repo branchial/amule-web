@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Uncomment for debug
 #set -x
@@ -65,7 +65,7 @@ if [[ ! -f ${AMULE_CONF} ]]; then
     echo "${AMULE_CONF} file NOT found. Generating new default configuration ..."
     cat > ${AMULE_CONF} <<- EOM
 [eMule]
-AppVersion=${AMULE_VERSION}
+AppVersion=2.3.1
 Nick=http://www.aMule.org
 QueueSizePref=50
 MaxUpload=0
@@ -161,7 +161,7 @@ ShowAllNotCats=0
 SmartIdState=0
 DropSlowSources=0
 KadNodesUrl=http://upd.emule-security.org/nodes.dat
-Ed2kServersUrl=http://ed2k.2x4u.de/v1s4vbaf/max/server.met
+Ed2kServersUrl=http://gruk.org/server.met.gz
 ShowRatesOnTitle=0
 GeoLiteCountryUpdateUrl=http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
 StatsServerName=Shorty's ED2K stats
@@ -242,7 +242,7 @@ GUICommand=
 [HTTPDownload]
 URL_1=
 EOM
-    echo "${AMULE_CONF} successfully generated."
+    echo "${AMULE_CONF} successfullly generated."
 else
     echo "${AMULE_CONF} file found. Using existing configuration."
 fi

@@ -1,17 +1,16 @@
-FROM alpine:3.12
-LABEL MAINTAINER "branchial@protonmail.com"
+FROM alpine:latest
+MAINTAINER docker@chabs.name
 
 ENV AMULE_VERSION 2.3.2
-ENV AMULE_BRANCH master
-ENV UPNP_VERSION 1.14.0
-ENV CRYPTOPP_VERSION CRYPTOPP_8_4_0
+ENV UPNP_VERSION 1.6.22
+ENV CRYPTOPP_VERSION CRYPTOPP_5_6_5
 
-RUN apk --update add gd geoip libpng libwebp pwgen sudo wxgtk zlib bash && \
+RUN apk --update add gd geoip libpng libwebp pwgen sudo wxgtk2.8 zlib bash && \
     apk --update add --virtual build-dependencies alpine-sdk automake \
                                autoconf bison g++ gcc gd-dev geoip-dev \
                                gettext gettext-dev git libpng-dev libwebp-dev \
                                libtool libsm-dev make musl-dev wget \
-                               wxgtk-dev zlib-dev
+                               wxgtk2.8-dev zlib-dev
 
 # Build libupnp
 RUN mkdir -p /opt \
@@ -37,7 +36,7 @@ RUN mkdir -p /opt && cd /opt \
 
 # Build amule from source
 RUN mkdir -p /opt/amule \
-    && git clone --branch ${AMULE_BRANCH} --single-branch "https://github.com/branchial/amule" /opt/amule \
+    && git clone --branch ${AMULE_VERSION} --single-branch "https://github.com/amule-project/amule" /opt/amule \
     && cd /opt/amule \
     && ./autogen.sh \
     && ./configure \
@@ -76,8 +75,7 @@ ADD amule.sh /home/amule/amule.sh
 
 # Final cleanup
 RUN chmod a+x /home/amule/amule.sh \
-    && rm -rf /var/cache/apk/* \
-    && rm -rf /opt \
+    && rm -rf /var/cache/apk/* && rm -rf /opt \
     && apk del build-dependencies
 
 EXPOSE 4711/tcp 4712/tcp 4672/udp 4665/udp 4662/tcp 4661/tcp

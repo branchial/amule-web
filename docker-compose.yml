@@ -3,6 +3,7 @@ services:
   amule:
     # image: ezjos/amule-web:latest
     build: docker/.
+    image: amule-web:testing
     ports:
       - "80:4711"
       - "4712:4712"

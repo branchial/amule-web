@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Uncomment for debug
 #set -x
@@ -65,7 +65,7 @@ if [[ ! -f ${AMULE_CONF} ]]; then
     echo "${AMULE_CONF} file NOT found. Generating new default configuration ..."
     cat > ${AMULE_CONF} <<- EOM
 [eMule]
-AppVersion=2.3.1
+AppVersion=2.3.2
 Nick=http://www.aMule.org
 QueueSizePref=50
 MaxUpload=0

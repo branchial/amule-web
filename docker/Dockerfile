@@ -1,16 +1,18 @@
-FROM alpine:latest
+FROM alpine:3.12
 MAINTAINER docker@chabs.name
 
-ENV AMULE_VERSION 2.3.2
-ENV UPNP_VERSION 1.6.22
-ENV CRYPTOPP_VERSION CRYPTOPP_5_6_5
 
-RUN apk --update add gd geoip libpng libwebp pwgen sudo wxgtk2.8 zlib bash && \
+ENV AMULE_VERSION 2.3.2
+ENV AMULE_BRANCH master
+ENV UPNP_VERSION 1.14.0
+ENV CRYPTOPP_VERSION CRYPTOPP_8_4_0
+
+RUN apk --update add gd geoip libpng libwebp pwgen sudo wxgtk zlib bash && \
     apk --update add --virtual build-dependencies alpine-sdk automake \
                                autoconf bison g++ gcc gd-dev geoip-dev \
                                gettext gettext-dev git libpng-dev libwebp-dev \
                                libtool libsm-dev make musl-dev wget \
-                               wxgtk2.8-dev zlib-dev
+                               wxgtk-dev zlib-dev
 
 # Build libupnp
 RUN mkdir -p /opt \
@@ -36,7 +38,7 @@ RUN mkdir -p /opt && cd /opt \
 
 # Build amule from source
 RUN mkdir -p /opt/amule \
-    && git clone --branch ${AMULE_VERSION} --single-branch "https://github.com/amule-project/amule" /opt/amule \
+    && git clone --branch ${AMULE_BRANCH} --single-branch "https://github.com/branchial/amule" /opt/amule \
     && cd /opt/amule \
     && ./autogen.sh \
     && ./configure \
@@ -72,11 +74,14 @@ RUN cd /usr/share/amule/webserver \
 
 # Add startup script
 ADD amule.sh /home/amule/amule.sh
+CMD ls -l /home/amule
 
 # Final cleanup
 RUN chmod a+x /home/amule/amule.sh \
     && rm -rf /var/cache/apk/* && rm -rf /opt \
     && apk del build-dependencies
+
+RUN ls -l /home/amule
 
 EXPOSE 4711/tcp 4712/tcp 4672/udp 4665/udp 4662/tcp 4661/tcp
 

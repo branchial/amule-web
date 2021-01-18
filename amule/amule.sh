@@ -41,7 +41,7 @@ if [[ ! -d "${AMULE_TEMP}" ]]; then
 fi
 
 if [[ -z "${GUI_PWD}" ]]; then
-    AMULE_GUI_PWD=$(pwgen -s 64)
+    AMULE_GUI_PWD=$(sudo < /dev/urandom tr -dc A-Za-z0-9 | head -c 64; echo)
     echo "No GUI password specified, using generated one: ${AMULE_GUI_PWD}"
 else
     AMULE_GUI_PWD="${GUI_PWD}"
@@ -49,7 +49,7 @@ fi
 AMULE_GUI_ENCODED_PWD=$(echo -n "${AMULE_GUI_PWD}" | md5sum | cut -d ' ' -f 1)
 
 if [[ -z "${WEBUI_PWD}" ]]; then
-    AMULE_WEBUI_PWD=$(pwgen -s 64)
+    AMULE_WEBUI_PWD=$(sudo < /dev/urandom tr -dc A-Za-z0-9 | head -c 64; echo)
     echo "No web UI password specified, using generated one: ${AMULE_WEBUI_PWD}"
 else
     AMULE_WEBUI_PWD="${WEBUI_PWD}"

@@ -2,16 +2,17 @@ version: '3.8'
 services:
   amule:
     # image: ezjos/amule-web:latest
-    build: docker/.
-    image: amule-web:latest
+    build: amule/.
+    image: ezjos/amule-web:latest
     ports:
-      - "80:4711"
+      - "4780:4711"
       - "4712:4712"
       - "4662:4662"
       - "4672:4672/udp"
     environment:
       - PUID=5000
       - GUID=5000
+      - WEBUI_TEMPLATE=AmuleWebUI-Reloaded
     networks:
       amule:
         aliases:
@@ -21,4 +22,4 @@ services:
       - ./data/incoming:/incoming
       - ./data/tmp:/temp
 networks:
-  amule:
+    amule:

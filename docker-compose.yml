@@ -1,34 +1,11 @@
 version: '3.8'
 services:
-  nordvpn:
-    build: nordvpn/.
-    image: ezjos/nordvpn:latest
-    cap_add:
-      - NET_ADMIN               # Required
-      - SYS_MODULE              # Required for TECHNOLOGY=NordLynx
-    sysctls:
-      - net.ipv4.conf.all.rp_filter=2
-    devices:
-      - /dev/net/tun            # Required
-    environment:                # Review https://github.com/bubuntux/nordvpn#environment-variables
-      - USER=user@email.com     # Required
-      - "PASS=pas$word"         # Required
-      - CONNECT=United_States
-      - TECHNOLOGY=NordLynx
-    ulimits:                    # Recommended for High bandwidth scenarios
-      memlock:
-        soft: -1
-        hard: -1
   amule:
     # image: ezjos/amule-web:latest
     build: amule/.
     image: ezjos/amule-web:fork-latest
-    network_mode: service:vpn
-    depends_on:
-      - vpn
-    expose:
-      - "4711"
     ports:
+      - "4780:4711"
       - "4712:4712"
       - "4662:4662"
       - "4672:4672/udp"
@@ -44,57 +21,5 @@ services:
       - ./data/conf:/home/amule/.aMule
       - ./data/incoming:/incoming
       - ./data/tmp:/temp
-      
-  traefik:
-    image: traefik
-    container_name: traefik
-    domainname: ${DOMAINNAME}
-    hostname: traefik
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      - DUCKDNS_TOKEN=${DUCKDNS_TOKEN}
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "traefik-data:/etc/traefik"
-      - "shared-data:/shared"
-    networks:
-      - default
-      - traefik-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=traefik"
-      - "traefik.frontend.rule=Host:traefik.${DOMAINNAME}"
-      - "traefik.port=8080"
-      - "traefik.docker.network=traefik-network"
-      - "docker.network=traefik-network"
-      - "traefik.frontend.headers.SSLRedirect=true"
-      - "traefik.frontend.headers.STSSeconds=315360000"
-      - "traefik.frontend.headers.browserXSSFilter=true"
-      - "traefik.frontend.headers.contentTypeNosniff=true"
-      - "traefik.frontend.headers.forceSTSHeader=true"
-      - "traefik.frontend.headers.SSLHost=example.com"
-      - "traefik.frontend.headers.STSIncludeSubdomains=true"
-      - "traefik.frontend.headers.STSPreload=true"
-      - "traefik.frontend.headers.frameDeny=true"
-      - "traefik.frontend.auth.basic.users=${HTTP_USERNAME}:${HTTP_PASSWORD}"
-
-volumes:
-  traefik-data:
-    driver: local-persist
-    driver_opts:
-      mountpoint: "${DOCKER_VOLUMES}/traefik"
-  shared-data:
-    driver: local-persist
-    driver_opts:
-      mountpoint: "${DOCKER_VOLUMES}/shared"
-
 networks:
-  traefik-network:
-    external: true
-  default:
-    driver: bridge
-networks:
-  amule:
+    amule:

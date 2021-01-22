@@ -58,7 +58,7 @@ AMULE_WEBUI_ENCODED_PWD=$(echo -n "${AMULE_WEBUI_PWD}" | md5sum | cut -d ' ' -f 
 
 if [[ ! -d ${AMULE_HOME} ]]; then
     echo "${AMULE_HOME} directory NOT found. Creating directory ..."
-    sudo -H -u '#'"${AMULE_UID}" sh -c "mkdir -p ${AMULE_HOME}"
+    sh -c "mkdir -p ${AMULE_HOME}"
 fi
 
 if [[ ! -f ${AMULE_CONF} ]]; then
@@ -280,6 +280,4 @@ else
     echo "Switched web UI theme to ${AMULE_WEBUI_TEMPLATE}"
 fi
 
-chown -R "${AMULE_UID}:${AMULE_GID}" /home/amule
-
-sudo -H -u '#'"${AMULE_UID}" sh -c "amuled -c ${AMULE_HOME} -o"
+sh -c "amuled -c ${AMULE_HOME} -o"

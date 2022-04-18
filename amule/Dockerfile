@@ -3,8 +3,8 @@ LABEL MAINTAINER "branchial@protonmail.com"
 
 ENV AMULE_VERSION 2.3.2
 ENV AMULE_BRANCH fork
-ENV UPNP_VERSION 1.14.0
-ENV CRYPTOPP_VERSION CRYPTOPP_8_4_0
+ENV UPNP_VERSION 1.14.12
+ENV CRYPTOPP_VERSION CRYPTOPP_8_6_0
 
 RUN apk --update add gd geoip libpng libwebp pwgen sudo wxgtk zlib bash && \
     apk --update add --virtual build-dependencies alpine-sdk automake \

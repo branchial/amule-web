@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.15
 LABEL MAINTAINER "branchial@protonmail.com"
 
 ENV AMULE_VERSION 2.3.2

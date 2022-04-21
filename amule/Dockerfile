@@ -19,7 +19,7 @@ USER appuser
 
 # install build environment
 RUN buildDeps='build-essential debhelper libgd-dev libgtk-3-dev zlib1g-dev libwxgtk3.0-gtk3-dev \
-               bison flex libcrypto++-dev libgeoip-dev libupnp-dev git' &&\
+               bison flex libcrypto++-dev libgeoip-dev libupnp-dev' &&\
     sudo apt-get -y install $buildDeps --no-install-recommends &&\
     cd /home/appuser && \
     git clone --branch master --single-branch "https://github.com/branchial/amule" src && \
@@ -59,6 +59,7 @@ RUN buildDeps='build-essential debhelper libgd-dev libgtk-3-dev zlib1g-dev libwx
     sudo git clone https://github.com/MatteoRagni/AmuleWebUI-Reloaded &&\
 #
 # Clean up
+    sudo apt purge -y --auto-remove git && \
     sudo rm -rf AmuleWebUI-Reloaded/.git AmuleWebUI-Reloaded/doc-images &&\
     sudo rm -rf \
 	   /tmp/* \

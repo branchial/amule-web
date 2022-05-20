@@ -1,6 +1,4 @@
 FROM ubuntu:22.04
-
-LABEL maintainer="Julio Gutierrez"
 ARG NORDVPN_VERSION=3.12.5
 
 HEALTHCHECK --interval=5m --timeout=20s --start-period=1m \

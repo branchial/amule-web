@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 LABEL MAINTAINER "branchial@protonmail.com"
 
 ENV TZ=Europe/Berlin
@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # install build environment
 RUN apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade 
-RUN apt-get -y install libcrypto++6 libgtk-3-0 libgd3 libgeoip1 libupnp13 zlib1g autopoint libcrypto++-utils libwxbase3.0-0v5 bash ca-certificates sudo git
+RUN apt-get -y install libcrypto++8 libgtk-4-1 libgd3 libgeoip1 libupnp13 zlib1g autopoint libcrypto++-utils libwxbase3.0-0v5 bash ca-certificates sudo git
 RUN update-ca-certificates
 
 # add appuser account
@@ -70,5 +70,7 @@ RUN buildDeps='build-essential debhelper libgd-dev libgtk-3-dev zlib1g-dev libwx
 
 # Add startup script
 ADD amule.sh ~/amule.sh
+RUN find ~/ -type f -iname '*.sh*' -exec chmod +x {} \;
+
 EXPOSE 4711/tcp 4712/tcp 4672/udp 4665/udp 4662/tcp 4661/tcp
 ENTRYPOINT ["~/amule.sh"]
